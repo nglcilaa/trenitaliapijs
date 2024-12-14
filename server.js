@@ -1,86 +1,26 @@
-import axios from 'axios';
 import express from 'express';
 import cors from 'cors';
-import stations from './stations.json' assert { type: 'json' };
+import { getRegion, getDepartures, getTrainIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia } from './functions/trainService.js';
+import { fetchNewsFromTicker, fetchNewsFromRSS } from './functions/fetchNewsRFI.js';
+import { getTrainDetails } from './functions/fetchDetailTrains.js'; // Modifica del percorso dell'importazione
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const BASE_URI = "http://www.viaggiatreno.it/infomobilita/resteasy/viaggiatreno";
-
 app.use(cors());
 app.use(express.json());
-
-const get = async (endpoint, ...args) => {
-  const url = `${BASE_URI}/${endpoint}/${args.join('/')}`;
-  try {
-    console.log(`Fetching from URL: ${url}`);  // Stampa l'URL completo in console
-    const response = await axios.get(url, { timeout: 30000 });
-    return response.data;
-  } catch (error) {
-    console.error('Errore nella richiesta:', error);
-    throw error;
-  }
-};
-
-const getRegion = async (stazioneId) => {
-  const url = `${BASE_URI}/regione/${stazioneId}`;
-  try {
-    const response = await axios.get(url, { timeout: 30000 });
-    return response.data;
-  } catch (error) {
-    console.error('Errore nella richiesta della regione:', error);
-    throw error;
-  }
-};
-
-const getDepartures = async (partenzaId, datetime) => {
-  return get('partenze', partenzaId, datetime);
-};
-
-const stazioniGenova = [
-  "GENOVA BRIGNOLE",
-  "GENOVA PIAZZA PRINCIPE",
-  "GENOVA SESTRI PONENTE",
-  "GENOVA PEGLI",
-  "GENOVA PRA",
-  "GENOVA BOLZANETO",
-  "GENOVA VOLTRI",
-  "GENOVA CORNIGLIANO",
-  "GENOVA SAMPIERDARENA"
-];
-
-const getTrainIcon = (categoria, regione, destinazione) => {
-  if (categoria === "REG") {
-    if (regione === 1) { // 1 corrisponde a LOMBARDIA
-      if (destinazione.includes("BOLOGNA") || destinazione.includes("TORINO") || stazioniGenova.some(staz => destinazione.includes(staz))) {
-        return "https://seeklogo.com/images/T/trenitalia-logo-0AE98832B5-seeklogo.com.png";
-      } else {
-        return "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Trenord_Logo.svg/800px-Trenord_Logo.svg.png";
-      }
-    } else {
-      return "https://seeklogo.com/images/T/trenitalia-logo-0AE98832B5-seeklogo.com.png";
-    }
-  } else if (categoria === "FR") {
-    return "https://upload.wikimedia.org/wikipedia/commons/8/81/Frecciarossa_TR_-_Logo.svg";
-  } else {
-    return "https://upload.wikimedia.org/wikipedia/commons/8/81/Frecciarossa_TR_-_Logo.svg";
-  }
-};
 
 app.get('/stations/:partenza_id/departures', async (req, res) => {
   const { partenza_id } = req.params;
   const today = new Date();
 
-  // Formattazione data e ora secondo lo standard richiesto
   const datetime = today.toString();
 
   try {
     console.log(`Checking for departures at ${datetime} from ${partenza_id}`);
 
-    // Ottenere la regione della stazione di partenza
     const regioneData = await getRegion(partenza_id);
-    const regione = parseInt(regioneData); // Supponendo che l'ID della regione sia un numero intero
+    const regione = parseInt(regioneData);
 
     const departures = await getDepartures(partenza_id, datetime);
     console.log('Departures:', departures);
@@ -154,7 +94,7 @@ app.get('/stations/:partenza_id/departures', async (req, res) => {
       dataPartenzaTreno: new Date(d.dataPartenzaTreno).getTime(),
       binarioProgrammato: d.binarioProgrammatoPartenzaDescrizione,
       binarioReale: d.binarioEffettivoPartenzaDescrizione,
-      iconaTreno: getTrainIcon(d.categoria, regione, d.destinazione)
+      iconaTreno: getTrainIcon(d.categoria, regione, d.destinazione, d.partenza)
     }));
 
     res.json(result);
@@ -164,9 +104,45 @@ app.get('/stations/:partenza_id/departures', async (req, res) => {
   }
 });
 
+app.get('/news/ticker', async (req, res) => {
+  try {
+    const news = await fetchNewsFromTicker();
+    res.json(news);
+  } catch (error) {
+    console.error('Errore nel recupero delle notizie dal ticker:', error);
+    res.status(500).json({ error: 'Errore nel recupero delle notizie dal ticker.' });
+  }
+});
+
+app.get('/news/rss', async (req, res) => {
+  try {
+    const news = await fetchNewsFromRSS();
+    res.json(news);
+  } catch (error) {
+    console.error('Errore nel recupero delle notizie dal RSS:', error);
+    res.status(500).json({ error: 'Errore nel recupero delle notizie dal RSS.' });
+  }
+});
+
+app.get('/train/details/:stazioneId/:trainCode/:date', async (req, res) => {
+  const { stazioneId, trainCode, date } = req.params;
+  try {
+    const trainDetails = await getTrainDetails(stazioneId, trainCode, date);
+    res.json(trainDetails);
+  } catch (error) {
+    console.error('Errore nel recupero dei dettagli del treno:', error);
+    res.status(500).json({ error: 'Errore nel recupero dei dettagli del treno.' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+
+
+
+
 
 
 
