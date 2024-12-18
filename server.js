@@ -3,6 +3,7 @@ import cors from 'cors';
 import { getRegion, getDepartures, getTrainIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia } from './functions/trainService.js';
 import { fetchNewsFromTicker, fetchNewsFromRSS } from './functions/fetchNewsRFI.js';
 import { getTrainDetails } from './functions/fetchDetailTrains.js';
+import { getStationDetails } from './functions/getStationDetails.js';
 
 const app = express();
 const PORT = process.env.PORT || 5000;
@@ -134,9 +135,21 @@ app.get('/train/details/:stazioneId/:trainCode/:date', async (req, res) => {
   }
 });
 
+app.get('/station-details/:code/:regione', async (req, res) => {
+  const { code, regione } = req.params;
+  try {
+    const details = await getStationDetails(code, regione);
+    res.json(details);
+  } catch (error) {
+    console.error('Errore nel recupero dei dettagli della stazione:', error);
+    res.status(500).json({ error: 'Errore nel recupero dei dettagli della stazione.' });
+  }
+});
+
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
 
 
 
