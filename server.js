@@ -1,38 +1,16 @@
 import express from 'express';
 import cors from 'cors';
-import axios from 'axios';
-import axios from 'axios';
 import { getRegion, getDepartures, getTrainIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia } from './functions/trainService.js';
 import { fetchNewsFromTicker, fetchNewsFromRSS } from './functions/fetchNewsRFI.js';
 import { getTrainDetails } from './functions/fetchDetailTrains.js';
 import { getStationDetails } from './functions/getStationDetails.js';
-import { getTrainDetails } from './functions/fetchDetailTrains.js';
-import { getStationDetails } from './functions/getStationDetails.js';
+import getTrainOrigin from './functions/trainOrigin.js'; // Importa la funzione da trainOrigin.js
 
 const app = express();
 const PORT = process.env.PORT || 5000;
 
 app.use(cors());
 app.use(express.json());
-
-const getTrainOrigin = async (numeroTreno) => {
-  const url = `http://www.viaggiatreno.it/infomobilita/resteasy/viaggiatreno/cercaNumeroTreno/${numeroTreno}`;
-
-  try {
-    const response = await axios.get(url);
-    const data = response.data; // Ottieni la risposta JSON
-
-    // Estrarre la stazione di provenienza dal campo descLocOrig
-    if (data && data.descLocOrig) {
-      return data.descLocOrig;
-    } else {
-      throw new Error('Stazione di provenienza non trovata');
-    }
-  } catch (error) {
-    console.error('Errore nella chiamata API:', error);
-    throw new Error('Errore nel recupero delle informazioni sul treno');
-  }
-};
 
 app.get('/stations/:partenza_id/departures', async (req, res) => {
   const { partenza_id } = req.params;
@@ -180,6 +158,5 @@ app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
 
-export default { getTrainOrigin }
 
-export default { getTrainOrigin }
+
