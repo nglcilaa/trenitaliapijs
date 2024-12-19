@@ -1,8 +1,11 @@
 import express from 'express';
 import cors from 'cors';
 import axios from 'axios';
+import axios from 'axios';
 import { getRegion, getDepartures, getTrainIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia } from './functions/trainService.js';
 import { fetchNewsFromTicker, fetchNewsFromRSS } from './functions/fetchNewsRFI.js';
+import { getTrainDetails } from './functions/fetchDetailTrains.js';
+import { getStationDetails } from './functions/getStationDetails.js';
 import { getTrainDetails } from './functions/fetchDetailTrains.js';
 import { getStationDetails } from './functions/getStationDetails.js';
 
@@ -176,5 +179,7 @@ app.get('/station-details/:code/:regione', async (req, res) => {
 app.listen(PORT, () => {
   console.log(`Server running on port ${PORT}`);
 });
+
+export default { getTrainOrigin }
 
 export default { getTrainOrigin }
