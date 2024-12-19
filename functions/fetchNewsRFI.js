@@ -26,7 +26,10 @@ const fetchNewsFromTicker = async () => {
 const fetchNewsFromRSS = async () => {
   const url = `${BASE_URI}/infomobilitaRSS/false`;
   try {
-    const response = await axios.get(url, { timeout: 30000 });
+    const response = await axios.get(url, { 
+      timeout: 30000,
+    });
+    console.log(response.data); // Logga i dati della risposta
     const $ = cheerio.load(response.data);
     const news = [];
     $('#accordionGenericInfomob .editModeCollapsibleElement').each((index, element) => {
@@ -43,5 +46,4 @@ const fetchNewsFromRSS = async () => {
 };
 
 export { fetchNewsFromTicker, fetchNewsFromRSS };
-
 
