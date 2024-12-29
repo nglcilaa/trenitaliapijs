@@ -56,7 +56,7 @@ const getTrainIcon = (categoria, regione, destinazione, partenza, codiceCliente)
     case 1:
       return "https://upload.wikimedia.org/wikipedia/commons/8/81/Frecciarossa_TR_-_Logo.svg";
     case 2:
-      return "https://seeklogo.com/images/T/trenitalia-logo-0AE98832B5-seeklogo.com.png";
+      return "https://nglcila.com/trenitalia.png";
     case 4:
       return "https://upload.wikimedia.org/wikipedia/commons/8/86/Treno_Intercity.svg";
     case 18:
