@@ -100,8 +100,9 @@ app.get('/stations/:partenza_id/departures', async (req, res) => {
         binarioProgrammato: d.binarioProgrammatoPartenzaDescrizione,
         binarioReale: d.binarioEffettivoPartenzaDescrizione,
         iconaTreno: getTrainIcon(d.categoria, regione, d.destinazione, d.partenza, d.codiceCliente),
-        stazioneDiProvenienza: origineStazione // Nuovo campo aggiunto
-      };
+        stazioneDiProvenienza: origineStazione
+        tipologiaTrenoIcona: getTrainTypeIcon(d.categoria, d.partenza, d.destinazione, d.categoriaDescrizione) // Nuovo campo aggiunto// Nuovo campo aggiunto
+        };
     }));
 
     res.json(result);
