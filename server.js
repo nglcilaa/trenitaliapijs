@@ -1,6 +1,6 @@
 import express from 'express';
 import cors from 'cors';
-import { getRegion, getDepartures, getTrainIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia } from './functions/trainService.js';
+import { getRegion, getDepartures, getTrainIcon, getTrainTypeIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia } from './functions/trainService.js';
 import { fetchNewsFromTicker, fetchNewsFromRSS } from './functions/fetchNewsRFI.js';
 import { getTrainDetails } from './functions/fetchDetailTrains.js';
 import { getStationDetails } from './functions/getStationDetails.js';
@@ -100,9 +100,8 @@ app.get('/stations/:partenza_id/departures', async (req, res) => {
         binarioProgrammato: d.binarioProgrammatoPartenzaDescrizione,
         binarioReale: d.binarioEffettivoPartenzaDescrizione,
         iconaTreno: getTrainIcon(d.categoria, regione, d.destinazione, d.partenza, d.codiceCliente),
-        stazioneDiProvenienza: origineStazione,
-        tipologiaTrenoIcona: getTrainTypeIcon(d.categoria, d.partenza, d.destinazione, d.categoriaDescrizione) // Nuovo campo aggiunto// Nuovo campo aggiunto
-        };
+        tipologiaTrenoIcona: getTrainTypeIcon(d.categoria, d.partenza, d.destinazione, d.categoriaDescrizione) // Nuovo campo aggiunto
+      };
     }));
 
     res.json(result);
