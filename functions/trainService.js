@@ -5,7 +5,7 @@ const BASE_URI = "http://www.viaggiatreno.it/infomobilita/resteasy/viaggiatreno"
 const get = async (endpoint, ...args) => {
   const url = `${BASE_URI}/${endpoint}/${args.join('/')}`;
   try {
-    console.log(`Fetching from URL: ${url}`);  
+    console.log(`Fetching from URL: ${url}`);
     const response = await axios.get(url, { timeout: 30000 });
     return response.data;
   } catch (error) {
@@ -58,7 +58,13 @@ const getTrainIcon = (categoria, regione, destinazione, partenza, codiceCliente)
     case 2:
       return "https://nglcila.com/trenitalia.png";
     case 4:
-      return "https://upload.wikimedia.org/wikipedia/commons/8/86/Treno_Intercity.svg";
+      if (categoria === "IC") {
+        return "https://nglcila.com/trenitalia.png";
+      } else if (categoria === "ICN") {
+        return "https://nglcila.com/icn_notte.gif";
+      } else {
+        return "https://upload.wikimedia.org/wikipedia/commons/8/86/Treno_Intercity.svg";
+      }
     case 18:
       return "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6c/Logo_Trenitalia_Tper_%282022%29.svg/800px-Logo_Trenitalia_Tper_%282022%29.svg.png";
     case 63:
@@ -70,7 +76,31 @@ const getTrainIcon = (categoria, regione, destinazione, partenza, codiceCliente)
   }
 };
 
-export { getRegion, getDepartures, getTrainIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia };
+const getTrainTypeIcon = (tipo, partenza, destinazione, categoriaDescrizione, numeroTreno, codiceCliente) => {
+  const regionaliVelociDestinazioni = [
+    "TORINO PORTA NUOVA", "BOLOGNA CENTRALE", "VENEZIA", "BRESCIA", "GENOVA", "ROMA TERMINI", "ROMA TIBURTINA", "ROMA FIUMICINO AEROPORTO"
+  ];
+
+  if (tipo === "REG") {
+    return "https://upload.wikimedia.org/wikipedia/commons/6/61/Simbolo_Treno_Regionale.svg";
+  } else if (tipo === "IC") {
+    return "https://upload.wikimedia.org/wikipedia/commons/8/86/Treno_Intercity.svg";
+  } else if (categoriaDescrizione === "FA" || categoriaDescrizione === "FR") {
+    return "https://nglcila.com/av.gif";
+  } else if (tipo === "ICN") {
+    return "https://nglcila.com/icn.gif";
+  } else if (
+    (["MILANO CENTRALE", "MILANO PORTA GARIBALDI"].includes(partenza) && 
+    ["TORINO PORTA NUOVA", "BOLOGNA CENTRALE", "VENEZIA", "BRESCIA", "GENOVA", "ROMA TERMINI", "ROMA TIBURTINA", "ROMA FIUMICINO AEROPORTO"].includes(destinazione)) || 
+    (["TORINO PORTA NUOVA", "BOLOGNA CENTRALE", "VENEZIA", "BRESCIA", "GENOVA", "ROMA TERMINI", "ROMA TIBURTINA", "ROMA FIUMICINO AEROPORTO"].includes(partenza) && 
+    ["MILANO CENTRALE", "MILANO PORTA GARIBALDI"].includes(destinazione))
+  ) {
+    return "https://upload.wikimedia.org/wikipedia/commons/7/7e/Simbolo_Treno_Regionale_Veloce.svg";
+  }
+  return "https://nglcila.com/av.gif";
+};
+
+export { getRegion, getDepartures, getTrainIcon, getTrainTypeIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia };
 
 
 
