@@ -82,6 +82,9 @@ const getTrainTypeIcon = (tipo, partenza, destinazione, categoriaDescrizione, nu
   ];
 
   if (tipo === "REG" && numeroTreno && numeroTreno.toString().length === 4) {
+    if (codiceCliente === 63) {
+      return "https://upload.wikimedia.org/wikipedia/commons/2/22/Icona_Regio_Express.png";
+    }
     return "https://upload.wikimedia.org/wikipedia/commons/7/7e/Simbolo_Treno_Regionale_Veloce.svg";
   } else if (tipo === "REG" && numeroTreno && numeroTreno.toString().length === 5) {
     return "https://upload.wikimedia.org/wikipedia/commons/6/61/Simbolo_Treno_Regionale.svg";
@@ -101,9 +104,6 @@ const getTrainTypeIcon = (tipo, partenza, destinazione, categoriaDescrizione, nu
   }
   return "https://nglcila.com/av.gif";
 };
-
-
-
 
 export { getRegion, getDepartures, getTrainIcon, getTrainTypeIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia };
 
