@@ -81,7 +81,9 @@ const getTrainTypeIcon = (tipo, partenza, destinazione, categoriaDescrizione, nu
     "TORINO PORTA NUOVA", "BOLOGNA CENTRALE", "VENEZIA", "BRESCIA", "GENOVA", "ROMA TERMINI", "ROMA TIBURTINA", "ROMA FIUMICINO AEROPORTO"
   ];
 
-  if (tipo === "REG") {
+  if (tipo === "REG" && numeroTreno && numeroTreno.toString().length === 4) {
+    return "https://upload.wikimedia.org/wikipedia/commons/7/7e/Simbolo_Treno_Regionale_Veloce.svg";
+  } else if (tipo === "REG" && numeroTreno && numeroTreno.toString().length === 5) {
     return "https://upload.wikimedia.org/wikipedia/commons/6/61/Simbolo_Treno_Regionale.svg";
   } else if (tipo === "IC") {
     return "https://upload.wikimedia.org/wikipedia/commons/8/86/Treno_Intercity.svg";
@@ -91,14 +93,17 @@ const getTrainTypeIcon = (tipo, partenza, destinazione, categoriaDescrizione, nu
     return "https://nglcila.com/icn.gif";
   } else if (
     (["MILANO CENTRALE", "MILANO PORTA GARIBALDI"].includes(partenza) && 
-    ["TORINO PORTA NUOVA", "BOLOGNA CENTRALE", "VENEZIA", "BRESCIA", "GENOVA", "ROMA TERMINI", "ROMA TIBURTINA", "ROMA FIUMICINO AEROPORTO"].includes(destinazione)) || 
-    (["TORINO PORTA NUOVA", "BOLOGNA CENTRALE", "VENEZIA", "BRESCIA", "GENOVA", "ROMA TERMINI", "ROMA TIBURTINA", "ROMA FIUMICINO AEROPORTO"].includes(partenza) && 
+    regionaliVelociDestinazioni.includes(destinazione)) || 
+    (regionaliVelociDestinazioni.includes(partenza) && 
     ["MILANO CENTRALE", "MILANO PORTA GARIBALDI"].includes(destinazione))
   ) {
     return "https://upload.wikimedia.org/wikipedia/commons/7/7e/Simbolo_Treno_Regionale_Veloce.svg";
   }
   return "https://nglcila.com/av.gif";
 };
+
+
+
 
 export { getRegion, getDepartures, getTrainIcon, getTrainTypeIcon, stazioniGenova, stazioniSpeciali, stazioniLombardia };
 
