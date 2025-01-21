@@ -100,7 +100,7 @@ app.get('/stations/:partenza_id/departures', async (req, res) => {
         binarioProgrammato: d.binarioProgrammatoPartenzaDescrizione,
         binarioReale: d.binarioEffettivoPartenzaDescrizione,
         iconaTreno: getTrainIcon(d.categoria, regione, d.destinazione, d.partenza, d.codiceCliente),
-        tipologiaTrenoIcona: getTrainTypeIcon(d.categoria, d.partenza, d.destinazione, d.categoriaDescrizione) // Nuovo campo aggiunto
+        tipologiaTrenoIcona: getTrainTypeIcon(d.categoria, d.partenza, d.destinazione, d.categoriaDescrizione, d.numeroTreno, d.codiceCliente) // Numero treno passato come parametro
       };
     }));
 
@@ -110,7 +110,6 @@ app.get('/stations/:partenza_id/departures', async (req, res) => {
     res.status(500).json({ error: 'Errore nel recupero delle partenze.' });
   }
 });
-
 
 app.get('/news/ticker', async (req, res) => {
   try {
