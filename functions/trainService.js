@@ -87,7 +87,7 @@ const getTrainTypeIcon = (tipo, partenza, destinazione, categoriaDescrizione, nu
     }
     return "https://upload.wikimedia.org/wikipedia/commons/7/7e/Simbolo_Treno_Regionale_Veloce.svg";
   } else if (tipo === "REG" && numeroTreno && numeroTreno.toString().length === 5) {
-    return "https://upload.wikimedia.org/wikipedia/commons/6/61/Simbolo_Treno_Regionale.svg";
+    return "https://www.lefrecce.it/Channels.Website.WEB/web/images/logo/RE.svg";
   } else if (tipo === "IC") {
     return "https://upload.wikimedia.org/wikipedia/commons/8/86/Treno_Intercity.svg";
   } else if (categoriaDescrizione === "FA" || categoriaDescrizione === "FR") {
